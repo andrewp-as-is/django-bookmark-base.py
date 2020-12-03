@@ -34,22 +34,3 @@ class BookmarkMixin:
     def create_bookmark(self, user):
         kwargs = {'created_by': user, 'obj_id': self.pk}
         self.get_bookmark_model().objects.get_or_create(**kwargs)
-
-"""
-from django.db import models
-from django_bookmark_base.models import BookmarkModel
-
-class PostBookmark(BookmarkModel):
-    obj = models.ForeignKey(
-        'Post', related_name = "+", on_delete = models.CASCADE)
-
-    class Meta:
-        unique_together = [('obj', 'created_by')]
-
-
-class Post(VoteMixin,models.Model):
-    ...
-    bookmarks_count = models.IntegerField(null=True)
-
-    bookmark_model = PostBookmark
-"""

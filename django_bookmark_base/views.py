@@ -47,7 +47,7 @@ class BookmarkViewMixin:
         kwargs = self.get_bookmark_kwargs()
         self.get_bookmark_model().objects.get_or_create(**kwargs)
 
-    def bookmark_toggle(self):
+    def toggle_bookmark(self):
         bookmark = self.get_bookmark()
         if bookmark:
             self.get_bookmark_model().objects.filter(pk=bookmark.pk).delete()
@@ -76,11 +76,11 @@ class BookmarkToggleView(LoginRequiredMixin, BookmarkViewMixin, View):
         return super(BookmarkToggleView, self).dispatch(*args, **kwargs)
 
     def get_data(self):
-        return {}
+        raise NotImplementedError('get_data() not implemented')
 
     def get_context_data(self, **kwargs):
         return {}
 
     def get(self, request, *args, **kwargs):
-        self.bookmarked = self.bookmark_toggle()
+        self.is_bookmarked = self.toggle_bookmark()
         return JsonResponse(self.get_data(), status=200)

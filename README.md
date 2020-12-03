@@ -33,7 +33,7 @@ class Collection(models.Model):
     bookmarks_count = models.IntegerField(default=0) # use triggers
 
     def get_bookmark_url(self):
-        return 'bookmark/collection/%s' % self.pk
+        return '/bookmark/collection/%s' % self.pk
 ```
 
 ##### `urls.py`
@@ -43,8 +43,7 @@ from django.urls import include, path
 import views
 
 urlpatterns = [
-    path('bookmark/collection/<int:pk>',
-         views.CollectionBookmarkToggleView.as_view(), name='collection'),
+    path('/bookmark/collection/<int:pk>',views.ToggleView.as_view()),
 ]
 ```
 
@@ -63,13 +62,13 @@ class CollectionDetailView(BookmarkViewMixin):
 from django_bookmark_base.views import BookmarkToggleView
 from apps.collections.models import Collection, CollectionBookmark
 
-class CollectionBookmarkToggleView(BookmarkToggleView):
+class ToggleView(BookmarkToggleView):
     bookmark_model = CollectionBookmark
 
     def get_data(self):
         collection = Collection.objects.get(pk=self.kwargs['pk'])
         return {
-            'bookmarked': self.bookmarked,
+            'is_bookmarked': self.is_bookmarked,
             'bookmarks_count': collection.bookmarks_count
         }
 ```
@@ -114,7 +113,7 @@ function bookmark_toggle(btn) {
         }
         if (xhr.status == 200) {
             bookmark_count.innerHTML=xhr.response.bookmarks_count;
-            if (xhr.response.bookmarked) {
+            if (xhr.response.is_bookmarked) {
                 btn.classList.add('text-green');
             } else {
                 btn.classList.remove('text-green');
